@@ -11,6 +11,7 @@
 from __future__ import division
 from nltk import *
 import nltk, re, pprint, csv
+from tokenize import Tokenizer
 
 raw_train_data = open('E:/train.csv', 'r')
 raw_tweet_sentiments = []
@@ -22,18 +23,17 @@ class GetData:
 	# Fetches the positive tweets -- for now it's a list, later figure to take this from a document or use the API
 	def positive(self):
 		pos_tweets = [(y,'positive') for (x,y) in raw_tweet_sentiments if x=='4']
-		# pos_tweets = [('I love this car', 'positive'),('This view is amazing', 'positive'), ('I feel great this morning', 'positive'),('I am so excited about the concert', 'positive'),('He is my best friend', 'positive')]
 		return pos_tweets
 		
 	# Fetches the negative tweets
 	def negative(self):
 		neg_tweets = [(y,'negative') for (x,y) in raw_tweet_sentiments if x=='0']
-		# neg_tweets = [('I do not like this car', 'negative'), ('This view is horrible', 'negative'), ('I feel tired this morning', 'negative'), ('I am not looking forward to the concert', 'negative'),('He is my enemy', 'negative')]
 		return neg_tweets
 	
 	# Fetches the gold standardized test data
 	def testData(self):
-		test_tweets = [(['feel', 'happy', 'this', 'morning'], 'positive'),(['larry', 'friend'], 'positive'),(['not', 'like', 'that', 'man'], 'negative'),(['house', 'not', 'great'], 'negative'),(['your', 'song', 'annoying'], 'negative')]
+		raw_test_data = open('E:/tweet.csv','r')
+		#test_tweets = [(['feel', 'happy', 'this', 'morning'], 'positive'),(['larry', 'friend'], 'positive'),(['not', 'like', 'that', 'man'], 'negative'),(['house', 'not', 'great'], 'negative'),(['your', 'song', 'annoying'], 'negative')]
 		return test_tweets
 	
 	# Gets a list of all the words in the tweets, without the sentiments
@@ -51,15 +51,19 @@ class GetData:
 	
 
 def main():
+
+	# Regex getting rid of the usernames, periods, commas
+	regex = re.compile('[@]{1}\w*|(http|com|tinyurl|www)|\.+|\,+')
 	fetch = GetData()
+	tok = Tokenizer(preserve_case=False)
 	tweets = []
 	
 	# Filters to select only words that are longer than 2 charcters from both the positive and negative training dataset
 	# Stores in tweets list in the format [(word, sentiment)]
 	for (words, sentiment) in fetch.positive() + fetch.negative():
-		words_filtered = [e.lower() for e in words.split() if len(e) >= 3]
+		words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
 		tweets.append((words_filtered, sentiment))
-		
+			
 	word_features = fetch.get_word_features(fetch.get_words_in_tweets(tweets))
 
 	# Function that creates a dictionary that has entires like - {contains(word): False, ...}
@@ -73,10 +77,9 @@ def main():
 	# Training set and Naive Bayes Classifier are used to classify the words - ends up classifying the above dictionary format with the sentiment associated
 	training_set = nltk.classify.apply_features(extract_features, tweets)
 	classifier = nltk.NaiveBayesClassifier.train(training_set)
-	
 		
-	tweet = 'Larry is weird horrible insane. Fuck. Amaze.'
-	print classifier.classify(extract_features(tweet.split()))
+	# tweet = 'Larry is weird horrible insane. Fuck. Amaze.'
+	# print classifier.classify(extract_features(tweet.split()))
 
 main()	
 	
