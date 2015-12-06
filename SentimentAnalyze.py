@@ -35,7 +35,7 @@ class GetData:
 		raw_test_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv','r')
 		test_tweets = []
 		for row in csv.reader(raw_test_data):
-			test_tweets.append(row[0])
+			test_tweets.append((row[0], ""))
 		return test_tweets
 	
 	# Gets a list of all the words in the tweets, without the sentiments
@@ -50,21 +50,25 @@ class GetData:
 		wordlist = nltk.FreqDist(wordlist)
 		word_features = wordlist.keys()
 		return word_features
-	
-	def run(self):
+
+	# Filters to select only words that are longer than 2 charcters from both the positive and negative training dataset
+	def filtered_tweets(self, input_list):
 		# Regex getting rid of the usernames, periods, commas
 		regex = re.compile('[@]{1}\w*|\.+|\,+|(and)|(the)|(you)|[x][\w|\d]*')
-		fetch = GetData()
 		tok = Tokenizer(preserve_case=False)
-		tweets = []
-		
-		# Filters to select only words that are longer than 2 charcters from both the positive and negative training dataset
-		# Stores in tweets list in the format [(word, sentiment)]
-		for (words, sentiment) in fetch.positive() + fetch.negative():
-			words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
-			tweets.append((words_filtered, sentiment))
 	
-		word_features = fetch.get_word_features(fetch.get_words_in_tweets(tweets))
+		tweets_filtered = []
+		
+		for (words,sentiment) in input_list:
+			words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
+			tweets_filtered.append((words_filtered, sentiment))
+		return tweets_filtered
+	
+	def run(self):
+		
+		tweets = self.filtered_tweets(self.positive() + self.negative())
+		
+		word_features = self.get_word_features(self.get_words_in_tweets(tweets))
 	
 		# Function that creates a dictionary that has entires like - {contains(word): False, ...}
 		def extract_features(document):
@@ -78,40 +82,40 @@ class GetData:
 		training_set = nltk.classify.apply_features(extract_features, tweets)
 		classifier = nltk.NaiveBayesClassifier.train(training_set)
 		
-		raw_test_tweets = fetch.testData()
-		test_tweets = []
-		for words in raw_test_tweets:
-			words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
-			test_tweets.append(words_filtered)
-			
 		poscount = 0
 		negcount = 0
-		sentiment_lables = []
-		for tweet in test_tweets:
-			classifier1 = classifier.classify(extract_features(tweet))
-			sentiment_lables.append(classifier1)
-			if(classifier1 == "positive"):
-				poscount += 1
-			elif(classifier1 == "negative"):
-				negcount += 1
 		
+		raw_test_tweets = self.testData()
+		test_tweets = self.filtered_tweets(raw_test_tweets)
+	
+		sentiment_labels = []
+		
+		test_tweets_with_sentiments = []
+		for (words,sentiment) in test_tweets:
+			sentiment = classifier.classify(extract_features(words))
+			test_tweets_with_sentiments.append((words,sentiment))
+			if(sentiment == "positive"):
+				poscount += 1
+			elif(sentiment == "negative"):
+				negcount += 1
+			sentiment_labels.append(sentiment)
+	
+		# print test_tweets
 		# print poscount
 		# print negcount		
-		# print test_tweets 
 		
-		if poscount > negcount:
-			print "The sentiment analysis from the last 600 tweets is - positive"
-		elif negcount > poscount:
-			print "The sentiment analysis from the last 600 tweets is - negative"
-		else:
-			print "The sentiment analysis from the last 600 tweets is - neutral"
-		
-		print "\nOne random tweet and the sentiment -"
-		print raw_test_tweets[2]
-		print sentiment_lables[2]
-
-def main():
-	f = GetData()
-	f.run()
 	
-main()
+		if poscount > negcount:
+			result = "positive"
+		elif negcount > poscount:
+			result = "negative"
+		else:
+			result = "neutral"
+
+		returntext = "The sentiment analysis from the last 600 tweets is - " + result + "\nOne sample tweet and the sentiment -"+ str(raw_test_tweets[2])+ "\n" + str(sentiment_labels[2])
+		return returntext
+		
+#def main():
+#	f = GetData()
+#	f.run()
+#main()

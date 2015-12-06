@@ -40,10 +40,13 @@ def message_to_screen(msg, color, location, fontsize):
 
 screen = 0
 query = ""
+returnedresult = ""
+hint = 0
 
 # Main Game Loop 
 while not gameExit:
 	# Event Handling Loop
+	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			gameExit = True
@@ -53,6 +56,7 @@ while not gameExit:
 		if screen == 1:
 			if event.type == pygame.KEYDOWN:
 				if event.unicode.isalpha():
+					hint = 1
 					query += event.unicode
 				elif event.key == pygame.K_BACKSPACE:
 					query = query[:-1]
@@ -62,6 +66,8 @@ while not gameExit:
 					if(query!=""):
 						screen = 2
 						getTweets.getting_query_result(query)
+						returnedresult = sentimentAnalysis.run()
+		
 			
 	gameDisplay.fill(white)
 	if(screen == 0):
@@ -69,12 +75,25 @@ while not gameExit:
 		message_to_screen("Press any key to continue...", green, [half_width-250, half_height-20], 30)
 	elif(screen == 1):
 		message_to_screen("Enter a query search term - ", black, [half_width-250, half_height-80], 50)
-		pygame.draw.circle(gameDisplay, (192,192,192), (half_width,half_height + 150), 50)
+		# pygame.draw.circle(gameDisplay, (192,192,192), (half_width,half_heiht + 150), 50)
 		message_to_screen(query, black, [half_width-250, half_height], 30)
-	elif(screen== 2):
+		if hint == 1:
+			message_to_screen("Press enter to submit...", blue, [half_width-250, half_height+100], 30)
+		# TODO - Notify user that system is processing
+	elif(screen == 2):
 		message_to_screen("Your query:", black, [100, 50], 30)
 		message_to_screen(query, blue, [100, 100], 30)
-		
+		message_to_screen(returnedresult, green, [200,200],20)
+		# TODO - Format properly
+		# TODO - Insert Question Tweet - Ask for answer
+		# TODO - Take input (Positive or Negative) P/N
+		# Disply result
+		# If matches, send this back to SentimentAnalyze GetData class and add it
+		# to the csv training data file :D
+		# Otherwise, tell the user that the system answered otherwise
+	elif(screen == 3):
+		message_to_screen("Screen 3 now: I guess this will contain, do you want to play again portion", black, [100, 50], 30)
+	
 	pygame.display.update()
 pygame.quit()
 quit()
