@@ -5,34 +5,34 @@ import tweepy, csv
 from tweepy import OAuthHandler
  
 class GetTweets():
-    consumer_key = 'mRJGFxAWklN3ffMzNnbbPwmyi'
-    consumer_secret = 'nGSxb13owzSxfSaFofSyTVtziL6PZYmaqpbR0CdUbCJYeU5VYz'
-    access_token_raw = '78868741-ioDSiXl5FvBcd6CDqGgBLLul7elMFLbtLFyDdgOwu'
-    access_token = access_token_raw.encode('utf-8')
-    access_secret = 'EnsD9n880W0TWD6G8pJ5C8n9FUqafi7AdPFszC2IH8ysF'
+    def getting_query_result(self, query):
+        consumer_key = 'mRJGFxAWklN3ffMzNnbbPwmyi'
+        consumer_secret = 'nGSxb13owzSxfSaFofSyTVtziL6PZYmaqpbR0CdUbCJYeU5VYz'
+        access_token_raw = '78868741-ioDSiXl5FvBcd6CDqGgBLLul7elMFLbtLFyDdgOwu'
+        access_token = access_token_raw.encode('utf-8')
+        access_secret = 'EnsD9n880W0TWD6G8pJ5C8n9FUqafi7AdPFszC2IH8ysF'
+        
+        auth = OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token, access_secret)
+        
+        api = tweepy.API(auth)
     
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_secret)
-    
-    api = tweepy.API(auth)
-    
-    csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv', 'w+')
-    
-    csvWriter = csv.writer(csvFile)
-    
-    # print api.rate_limit_status()
-    print ""
-    query = raw_input("Enter a query search term: ")
-    print ""
-    
-    for tweet in tweepy.Cursor(api.search, 
-                        q=query, 
-                        show_user = False, 
-                        lang="en").items(600):
-        csvWriter.writerow([tweet.text.encode('utf-8')])
-        print tweet.text.encode('utf-8')
-    
-    csvFile.close()
+        csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv', 'w+')
+        
+        csvWriter = csv.writer(csvFile)
+        
+        # print api.rate_limit_status()
+        # print ""
+        # query = raw_input("Enter a query search term: ")
+       
+        for tweet in tweepy.Cursor(api.search, 
+                            q=query, 
+                            show_user = False, 
+                            lang="en").items(10):
+            csvWriter.writerow([tweet.text.encode('utf-8')])
+            #print tweet.text.encode('utf-8')
+        print "Saved sample tweets from query in tweet.csv"
+        csvFile.close()
     
     # Read from csv to list
     # with open('E:/tweet.csv', 'rb') as f:
