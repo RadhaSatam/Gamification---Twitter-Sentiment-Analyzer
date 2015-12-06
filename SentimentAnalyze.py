@@ -33,7 +33,9 @@ class GetData:
 	# Fetches the gold standardized test data
 	def testData(self):
 		raw_test_data = open('E:/tweet.csv','r')
-		#test_tweets = [(['feel', 'happy', 'this', 'morning'], 'positive'),(['larry', 'friend'], 'positive'),(['not', 'like', 'that', 'man'], 'negative'),(['house', 'not', 'great'], 'negative'),(['your', 'song', 'annoying'], 'negative')]
+		test_tweets = []
+		for row in csv.reader(raw_test_data):
+			test_tweets.append(row[0])
 		return test_tweets
 	
 	# Gets a list of all the words in the tweets, without the sentiments
@@ -53,7 +55,7 @@ class GetData:
 def main():
 
 	# Regex getting rid of the usernames, periods, commas
-	regex = re.compile('[@]{1}\w*|(http|com|tinyurl|www)|\.+|\,+')
+	regex = re.compile('[@]{1}\w*|\.+|\,+')
 	fetch = GetData()
 	tok = Tokenizer(preserve_case=False)
 	tweets = []
@@ -63,7 +65,7 @@ def main():
 	for (words, sentiment) in fetch.positive() + fetch.negative():
 		words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
 		tweets.append((words_filtered, sentiment))
-			
+
 	word_features = fetch.get_word_features(fetch.get_words_in_tweets(tweets))
 
 	# Function that creates a dictionary that has entires like - {contains(word): False, ...}
@@ -73,13 +75,19 @@ def main():
 		for word in word_features:
 			features['contains(%s)' % word] = (word in document_words)
 		return features
-	
+		
 	# Training set and Naive Bayes Classifier are used to classify the words - ends up classifying the above dictionary format with the sentiment associated
 	training_set = nltk.classify.apply_features(extract_features, tweets)
 	classifier = nltk.NaiveBayesClassifier.train(training_set)
+	
+	raw_test_tweets = fetch.testData()
+	test_tweets = []
+	for words in raw_test_tweets:
+		words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
+		test_tweets.append(words_filtered)
 		
-	# tweet = 'Larry is weird horrible insane. Fuck. Amaze.'
-	# print classifier.classify(extract_features(tweet.split()))
+	print test_tweets
+	print classifier.classify(extract_features(test_tweets[0]))
 
 main()	
 	

@@ -88,6 +88,10 @@ class Tokenizer:
             s = unicode(s)
         # Fix HTML character entitites:
         s = self.__html2unicode(s)
+        
+        # Replaces the links with a blank
+        s = re.sub(r'(http|https)\:\/+\w+\.\w+\s*', '', s)
+        
         # Tokenize:
         words = word_re.findall(s)
         # Possible alter the case, but avoid changing emoticons like :D into :d:
