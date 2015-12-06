@@ -28,7 +28,7 @@ class GetTweets():
     for tweet in tweepy.Cursor(api.search, 
                         q=query, 
                         show_user = False, 
-                        lang="en").items(12):
+                        lang="en").items(600):
         csvWriter.writerow([tweet.text.encode('utf-8')])
         print tweet.text.encode('utf-8')
     

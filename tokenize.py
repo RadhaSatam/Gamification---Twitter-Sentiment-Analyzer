@@ -90,7 +90,7 @@ class Tokenizer:
         s = self.__html2unicode(s)
         
         # Replaces the links with a blank
-        s = re.sub(r'(http|https)\:\/+\w+\.\w+\s*', '', s)
+        s = re.sub(r'(http|https)\:[\/+\w+\.\w+]*\s*', '', s)
         
         # Tokenize:
         words = word_re.findall(s)
