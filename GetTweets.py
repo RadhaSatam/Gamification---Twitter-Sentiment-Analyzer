@@ -16,7 +16,7 @@ class GetTweets():
     
     api = tweepy.API(auth)
     
-    csvFile = open('E:/tweet.csv', 'w+')
+    csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv', 'w+')
     
     csvWriter = csv.writer(csvFile)
     
@@ -28,7 +28,7 @@ class GetTweets():
     for tweet in tweepy.Cursor(api.search, 
                         q=query, 
                         show_user = False, 
-                        lang="en").items(2):
+                        lang="en").items(12):
         csvWriter.writerow([tweet.text.encode('utf-8')])
         print tweet.text.encode('utf-8')
     

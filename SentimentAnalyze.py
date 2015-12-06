@@ -13,7 +13,7 @@ from nltk import *
 import nltk, re, pprint, csv
 from tokenize import Tokenizer
 
-raw_train_data = open('E:/train.csv', 'r')
+raw_train_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'r')
 raw_tweet_sentiments = []
 for row in csv.reader(raw_train_data):
 	raw_tweet_sentiments.append((row[0],row[5]))
@@ -32,7 +32,7 @@ class GetData:
 	
 	# Fetches the gold standardized test data
 	def testData(self):
-		raw_test_data = open('E:/tweet.csv','r')
+		raw_test_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv','r')
 		test_tweets = []
 		for row in csv.reader(raw_test_data):
 			test_tweets.append(row[0])
@@ -85,9 +85,28 @@ def main():
 	for words in raw_test_tweets:
 		words_filtered = [e.lower().encode('utf-8') for e in tok.tokenize(words) if len(e) >= 3 and not regex.match(e)]
 		test_tweets.append(words_filtered)
-		
-	print test_tweets
-	print classifier.classify(extract_features(test_tweets[0]))
+	
+	poscount = 0
+	negcount = 0
+	sentiment_lables = []
+	for tweet in raw_test_tweets:
+		classifier1 = classifier.classify(extract_features(tweet))
+		sentiment_lables.append(classifier1)
+		if(classifier1 == "positive"):
+			poscount += 1
+		elif(classifier1 == "negative"):
+			negcount += 1
+			
+	if poscount > negcount:
+		print "The sentiment analysis from the last 10 tweets is - positive"
+	elif negcount > poscount:
+		print "The sentiment analysis from the last 10 tweets is - negative"
+	else:
+		print "The sentiment analysis from the last 10 tweets is - neutral"
+	
+	print "\nOne random tweet and the sentiment -"
+	print raw_test_tweets[1]
+	print sentiment_lables[1]
 
 main()	
 	
