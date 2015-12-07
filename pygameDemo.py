@@ -76,6 +76,9 @@ while not gameExit:
 					elif event.key == pygame.K_n:
 						user_response = "negative"
 						save_to_file = 1
+					elif event.key == pygame.K_x:
+						user_response = "neutral"
+						save_to_file = 1
 				elif(response_printed == 1):
 					if event.key == pygame.K_ESCAPE:
 						gameExit == True
@@ -108,8 +111,10 @@ while not gameExit:
 			color = green
 		elif(returnedresult[0] == "negative"):
 			color = red
+		elif(returnedresult[0] == "neutral"):
+			color = black
 		message_to_screen("The sentiment analysis for the query from the last 500 tweets - " + returnedresult[0], color, [50,130],25)	
-		message_to_screen("For the following tweet, enter positive (P) or negative (N) - ", blue, [50,170],25)
+		message_to_screen("For the following tweet, enter positive (P), negative (N) or neutral (X) - ", blue, [50,170],25)
 	
 		tweet_question = returnedresult[1]
 		tweet_sentiment = returnedresult[2]
@@ -120,14 +125,21 @@ while not gameExit:
 		message_to_screen(' '.join(firstpart), black, [50,200],25)
 		message_to_screen(' '.join(secondpart), black, [50,225],25)
 		
-		if(user_response!=""):
-			color = red
+		if(user_response!=""):	
 			if(user_response == "positive"):
 				color = green
+			elif(user_response == "negative"):
+				color = red
+			else:
+				color = black
 			message_to_screen("Your response: " + user_response, color, [50,280],25)
-			color = red
+			
 			if(tweet_sentiment[tweet_number] == "positive"):
 				color = green
+			elif(tweet_sentiment[tweet_number] == "negative"):
+				color = red
+			else:
+				color = black
 			message_to_screen("System response: " + tweet_sentiment[tweet_number], color, [50,310],25)
 			response_printed = 1
 		

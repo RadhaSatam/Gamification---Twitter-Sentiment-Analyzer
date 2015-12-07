@@ -19,16 +19,20 @@ for row in csv.reader(raw_train_data):
 	raw_tweet_sentiments.append((row[0],row[5]))
 
 class GetData:	
-		
-	# Fetches the positive tweets -- for now it's a list, later figure to take this from a document or use the API
-	def positive(self):
-		pos_tweets = [(y,'positive') for (x,y) in raw_tweet_sentiments if x=='4']
-		return pos_tweets
-		
-	# Fetches the negative tweets
-	def negative(self):
-		neg_tweets = [(y,'negative') for (x,y) in raw_tweet_sentiments if x=='0']
-		return neg_tweets
+
+	# Fetches tweets with sentiment labels
+	def all_tweets_sentiments(self):
+		tweets = []
+		for (x,y) in raw_tweet_sentiments:
+			if x == '0':
+				sentiment_string = 'negative'
+			elif x == '2':
+				sentiment_string = 'neutral'
+			elif x == '4':
+				sentiment_string = 'positive'
+			tweets.append((y,sentiment_string))
+			
+		return tweets
 	
 	# Fetches the gold standardized test data
 	def testData(self):
@@ -64,6 +68,7 @@ class GetData:
 			tweets_filtered.append((words_filtered, sentiment))
 		return tweets_filtered
 	
+	# Function to write add the learned data to the train file
 	def update_train_data(self, tweet, sentiment):
 		csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'ab')
 		csvWriter = csv.writer(csvFile)
@@ -71,7 +76,7 @@ class GetData:
 			val = "4"
 		elif(sentiment == "negative"):
 			val = "0"
-		else:
+		elif(sentiment == "neutral"):
 			val = "2"
 	
 		csvWriter.writerow([val,"","","","",tweet])
@@ -80,8 +85,7 @@ class GetData:
 	
 	def run(self):
 		
-		tweets = self.filtered_tweets(self.positive() + self.negative())
-		
+		tweets = self.filtered_tweets(self.all_tweets_sentiments())	
 		word_features = self.get_word_features(self.get_words_in_tweets(tweets))
 	
 		# Function that creates a dictionary that has entires like - {contains(word): False, ...}
@@ -96,8 +100,7 @@ class GetData:
 		training_set = nltk.classify.apply_features(extract_features, tweets)
 		classifier = nltk.NaiveBayesClassifier.train(training_set)
 		
-		poscount = 0
-		negcount = 0
+		poscount, negcount, neucount = 0,0,0
 		
 		raw_test_tweets = self.testData()
 		test_tweets = self.filtered_tweets(raw_test_tweets)
@@ -105,6 +108,7 @@ class GetData:
 		sentiment_labels = []
 		
 		test_tweets_with_sentiments = []
+		
 		for (words,sentiment) in test_tweets:
 			sentiment = classifier.classify(extract_features(words))
 			test_tweets_with_sentiments.append((words,sentiment))
@@ -112,16 +116,26 @@ class GetData:
 				poscount += 1
 			elif(sentiment == "negative"):
 				negcount += 1
+			elif(sentiment == "neutral"):
+				neucount += 1
 			sentiment_labels.append(sentiment)
 	
 		# print test_tweets
 		# print poscount
 		# print negcount		
-			
-		if poscount > negcount:
+		
+		Max = poscount
+		if negcount > Max:
+			Max = negcount
+		if neucount > Max:
+			Max = neucount
+    
+		if poscount == Max:
 			result = "positive"
-		elif negcount > poscount:
+		elif negcount == Max:
 			result = "negative"
+		elif negcount == Max and poscount == Max:
+			result = "neutral"
 		else:
 			result = "neutral"
 		
