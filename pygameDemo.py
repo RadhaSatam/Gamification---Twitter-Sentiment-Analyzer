@@ -14,14 +14,12 @@ red = (255,0,0)
 green = (0,255,0)
 blue = (0,0,255)
 
+# Width and Height of the surface
 display_width = 800
 display_height = 600
 
 half_width = display_width/2
 half_height = display_height/2
-
-x = half_width -160
-y = half_height - 15
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Twitter Sentiment Analyzer')
@@ -77,6 +75,7 @@ while not gameExit:
 						save_to_file = 1
 					elif event.key == pygame.K_n:
 						user_response = "negative"
+						save_to_file = 1
 				elif(response_printed == 1):
 					if event.key == pygame.K_ESCAPE:
 						gameExit == True
@@ -140,17 +139,15 @@ while not gameExit:
 				if(save_to_file==1):
 					sentimentAnalysis.update_train_data(tweet_question[tweet_number], tweet_sentiment[tweet_number])
 			else:
-				message_to_print = "Sorry, your answer didn't match the system response."	
+				message_to_print = "Sorry, your answer didn't match the system response."
+				# If the answers don't match but the overall sentiment matches, we add it to the train data
+				if(user_response == returnedresult[0] and save_to_file ==1):
+					sentimentAnalysis.update_train_data(tweet_question[tweet_number], tweet_sentiment[tweet_number])						
 			message_to_screen(message_to_print, color, [50,360],25)
 			message_to_screen("Press (Y) to see another tweet from the same query...", black, [50,420],20)
 			message_to_screen("Press (E) to enter a new query...", black, [50,440],20)
 			message_to_screen("Press (Esc) to quit...", black, [50,460],20)
 			
-		# If matches, send this back to SentimentAnalyze GetData class and add it
-		# to the csv training data file :D
-		# If the user answered otherwise - 
-		# Perform a check of the analyzed results for the last 500 tweets and change and store user data in csv if it's above a threshold.
-		
 	elif(screen == 3):
 		message_to_screen("Screen 3 now: I guess this will contain, do you want to play again portion", black, [100, 50], 30)
 	

@@ -128,7 +128,7 @@ class GetData:
 		questionString = [(x.decode('unicode_escape').encode('ascii','ignore')).replace("\r","") for (x,y) in raw_test_tweets]
 		
 		returntext = [result, questionString, sentiment_labels] 
-		print "Result updated"
+		print "Result updated for query"
 		#print str(returntext)
 		return returntext
 		
