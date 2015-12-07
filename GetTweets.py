@@ -6,11 +6,11 @@ from tweepy import OAuthHandler
  
 class GetTweets():
     def getting_query_result(self, query):
-        consumer_key = 'mRJGFxAWklN3ffMzNnbbPwmyi'
-        consumer_secret = 'nGSxb13owzSxfSaFofSyTVtziL6PZYmaqpbR0CdUbCJYeU5VYz'
-        access_token_raw = '78868741-ioDSiXl5FvBcd6CDqGgBLLul7elMFLbtLFyDdgOwu'
+        consumer_key = ''
+        consumer_secret = ''
+        access_token_raw = ''
         access_token = access_token_raw.encode('utf-8')
-        access_secret = 'EnsD9n880W0TWD6G8pJ5C8n9FUqafi7AdPFszC2IH8ysF'
+        access_secret = ''
         
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_secret)
