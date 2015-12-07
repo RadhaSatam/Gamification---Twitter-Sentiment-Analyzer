@@ -64,6 +64,14 @@ class GetData:
 			tweets_filtered.append((words_filtered, sentiment))
 		return tweets_filtered
 	
+	def update_train_data(self, tweet, sentiment):
+		csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'w+')
+        csvWriter = csv.writer(csvFile)
+      #  csvWriter.writerow([])
+        # TODO! 
+        print "Updated train.csv"
+        csvFile.close()
+	
 	def run(self):
 		
 		tweets = self.filtered_tweets(self.positive() + self.negative())
@@ -111,8 +119,12 @@ class GetData:
 			result = "negative"
 		else:
 			result = "neutral"
-
-		returntext = "The sentiment analysis from the last 600 tweets is - " + result + "\nOne sample tweet and the sentiment -"+ str(raw_test_tweets[2])+ "\n" + str(sentiment_labels[2])
+		
+		questionString = [(x.decode('unicode_escape').encode('ascii','ignore')).replace("\r","") for (x,y) in raw_test_tweets]
+		
+		returntext = [result, questionString, sentiment_labels] 
+		print "Result updated"
+		#print str(returntext)
 		return returntext
 		
 #def main():
