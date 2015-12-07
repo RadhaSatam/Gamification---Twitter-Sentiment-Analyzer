@@ -65,12 +65,18 @@ class GetData:
 		return tweets_filtered
 	
 	def update_train_data(self, tweet, sentiment):
-		csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'w+')
-        csvWriter = csv.writer(csvFile)
-      #  csvWriter.writerow([])
-        # TODO! 
-        print "Updated train.csv"
-        csvFile.close()
+		csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'ab')
+		csvWriter = csv.writer(csvFile)
+		if(sentiment== "positive"):
+			val = "4"
+		elif(sentiment == "negative"):
+			val = "0"
+		else:
+			val = "2"
+	
+		csvWriter.writerow([val,"","","","",tweet])
+		print "Updated train.csv"
+		csvFile.close()
 	
 	def run(self):
 		
@@ -111,8 +117,7 @@ class GetData:
 		# print test_tweets
 		# print poscount
 		# print negcount		
-		
-	
+			
 		if poscount > negcount:
 			result = "positive"
 		elif negcount > poscount:

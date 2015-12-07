@@ -48,7 +48,8 @@ tweet_number = 1
 # Main Game Loop 
 while not gameExit:
 	# Event Handling Loop
-	
+	save_to_file = 0
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			gameExit = True
@@ -73,6 +74,7 @@ while not gameExit:
 				if response_printed == 0:
 					if event.key == pygame.K_p:
 						user_response = "positive"
+						save_to_file = 1
 					elif event.key == pygame.K_n:
 						user_response = "negative"
 				elif(response_printed == 1):
@@ -135,6 +137,8 @@ while not gameExit:
 			if(user_response == tweet_sentiment[tweet_number]):
 				color = green
 				message_to_print = "Congratulations your answer matched the system response!!"
+				if(save_to_file==1):
+					sentimentAnalysis.update_train_data(tweet_question[tweet_number], tweet_sentiment[tweet_number])
 			else:
 				message_to_print = "Sorry, your answer didn't match the system response."	
 			message_to_screen(message_to_print, color, [50,360],25)
