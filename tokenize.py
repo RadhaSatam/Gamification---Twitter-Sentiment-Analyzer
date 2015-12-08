@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Credits to - Christopher Potts
+# http://sentiment.christopherpotts.net/code-data/happyfuntokenizing.py
+#
+# tokenize.py
+#
+#   The functions in SentimentAnalyze.py make use of this file in order to tokenize the tweet strings. 
+#   It preserves the emoticon strings and the html strings which may be in the tweet. 
+
 import re
 import htmlentitydefs
 

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Gamification
 # ---------------------------------------
 # Twitter Sentiment Analyzer
@@ -5,7 +8,21 @@
 # CIS 496H - Term Project
 # Instructor - Gabriel Murray
 # Created by - Radha Satam [300130632]
+#
+# SentimentAnalyze.py
+#
+#   It includes several functions in order to extract the data from the training dataset (train.csv)
+#   and then process that data. Naïve Bayes Classifier is used to classify the data.
+#   It is also used to classify the test data contained in (tweet.csv) after the user has entered a query. 
+#	It returns the overall sentiments of the 500 tweets, the list of 500 tweets and also the list containing 
+#	the sentiment labels for the 500 tweets. 
 # ----------------------------------------
+#
+# !!! Replace 'E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv' 
+# 	  and 'E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv'
+#     with the location of the tweet.csv and train.csv file in your directoy, respectively.
+# 	  
+#
 
 # Imports
 from __future__ import division
@@ -13,6 +30,7 @@ from nltk import *
 import nltk, re, pprint, csv
 from tokenize import Tokenizer
 
+# Opens training data from train.csv 
 raw_train_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'r')
 raw_tweet_sentiments = []
 for row in csv.reader(raw_train_data):
@@ -83,6 +101,7 @@ class GetData:
 		print "Updated train.csv"
 		csvFile.close()
 	
+	# Main function which runs the training and testing of the data -- try and get it to split into two functions
 	def run(self):
 		
 		tweets = self.filtered_tweets(self.all_tweets_sentiments())	
@@ -100,6 +119,7 @@ class GetData:
 		training_set = nltk.classify.apply_features(extract_features, tweets)
 		classifier = nltk.NaiveBayesClassifier.train(training_set)
 		
+		# Counters
 		poscount, negcount, neucount = 0,0,0
 		
 		raw_test_tweets = self.testData()
@@ -130,6 +150,7 @@ class GetData:
 		if neucount > Max:
 			Max = neucount
     
+		# Finds the maximum value from the tags, helps determine the overall sentiment from the test tweets
 		if poscount == Max:
 			result = "positive"
 		elif negcount == Max:
@@ -139,14 +160,20 @@ class GetData:
 		else:
 			result = "neutral"
 		
+		# Formatted to remove spaces and the unicode characters from the raw tweets for a cleaner display
 		questionString = [(x.decode('unicode_escape').encode('ascii','ignore')).replace("\r","") for (x,y) in raw_test_tweets]
 		
+		# returns a list containing -
+		# - overall sentiment(result) 
+		# - list of formatted tweets (questionString) 
+		# - list of sentiments for all test tweets (sentiment_labels)
 		returntext = [result, questionString, sentiment_labels] 
 		print "Result updated for query"
 		#print str(returntext)
 		return returntext
 		
-#def main():
-#	f = GetData()
-#	f.run()
-#main()
+'''def main():
+	f = GetData()
+	f.run()
+main()
+'''

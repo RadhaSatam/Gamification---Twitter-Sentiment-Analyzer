@@ -1,10 +1,29 @@
+# Gamification
+# ---------------------------------------
+# Twitter Sentiment Analyzer
+# ---------------------------------------
+# CIS 496H - Term Project
+# Instructor - Gabriel Murray
+# Created by - Radha Satam [300130632]
+#
+# Main.py
+#	This is the main file which contains the code for the game. 
+#	The user interface is generated here. 
+#	The actions are specified based on certain events and based on which screen the user is currently on. 
+#	This file makes use of the pygame package and uses GetTweets to get the tweets 
+#	 based on user query and SentimentAnalyze for training and tagging the dataset.
+#
+# ----------------------------------------
+
 import pygame, math
 from SentimentAnalyze import GetData
 from GetTweets import GetTweets
 
+# Objects declared for the two other classes
 sentimentAnalysis = GetData()
 getTweets = GetTweets()
 
+# Initialized
 pygame.init()
 
 # Defining colors 
@@ -21,6 +40,7 @@ display_height = 600
 half_width = display_width/2
 half_height = display_height/2
 
+# Display surface specified
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Twitter Sentiment Analyzer')
 
@@ -35,7 +55,7 @@ def message_to_screen(msg, color, location, fontsize):
 	screen_text = font.render(msg, True, color)
 	gameDisplay.blit(screen_text, location )
 
-
+# Variable declarations
 screen = 0
 query = ""
 returnedresult = ""
@@ -47,13 +67,16 @@ tweet_number = 1
 while not gameExit:
 	# Event Handling Loop
 	save_to_file = 0
-
+	
+	# Event handling
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			gameExit = True
+		# For screen 0 
 		if screen == 0:
 			if(event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN):
 				screen = 1
+		# For screen 1
 		if screen == 1:
 			if event.type == pygame.KEYDOWN:
 				if event.unicode.isalpha():
@@ -66,7 +89,8 @@ while not gameExit:
 					if(query!=""):
 						screen = 2
 						getTweets.getting_query_result(query)
-						returnedresult = sentimentAnalysis.run()		
+						returnedresult = sentimentAnalysis.run()	
+		# For screen 2	
 		if screen == 2:
 			if event.type == pygame.KEYDOWN:
 				if response_printed == 0:
@@ -80,8 +104,6 @@ while not gameExit:
 						user_response = "neutral"
 						save_to_file = 1
 				elif(response_printed == 1):
-					if event.key == pygame.K_ESCAPE:
-						gameExit == True
 					if event.key == pygame.K_y:
 						tweet_number += 1
 						user_response = ""
@@ -154,15 +176,15 @@ while not gameExit:
 				message_to_print = "Sorry, your answer didn't match the system response."
 				# If the answers don't match but the overall sentiment matches, we add it to the train data
 				if(user_response == returnedresult[0] and save_to_file ==1):
-					sentimentAnalysis.update_train_data(tweet_question[tweet_number], tweet_sentiment[tweet_number])						
+					sentimentAnalysis.update_train_data(tweet_question[tweet_number], user_response)						
 			message_to_screen(message_to_print, color, [50,360],25)
 			message_to_screen("Press (Y) to see another tweet from the same query...", black, [50,420],20)
 			message_to_screen("Press (E) to enter a new query...", black, [50,440],20)
-			message_to_screen("Press (Esc) to quit...", black, [50,460],20)
 			
 	elif(screen == 3):
 		message_to_screen("Screen 3 now: I guess this will contain, do you want to play again portion", black, [100, 50], 30)
 	
+	# Update is where it gets shown to the user
 	pygame.display.update()
 pygame.quit()
 quit()
