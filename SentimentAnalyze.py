@@ -31,7 +31,7 @@ import nltk, re, pprint, csv
 from tokenize import Tokenizer
 
 # Opens training data from train.csv 
-raw_train_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'r')
+raw_train_data = open('train.csv', 'r')
 raw_tweet_sentiments = []
 for row in csv.reader(raw_train_data):
 	raw_tweet_sentiments.append((row[0],row[5]))
@@ -54,7 +54,7 @@ class GetData:
 	
 	# Fetches the gold standardized test data
 	def testData(self):
-		raw_test_data = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv','r')
+		raw_test_data = open('tweet.csv','r')
 		test_tweets = []
 		for row in csv.reader(raw_test_data):
 			test_tweets.append((row[0], ""))
@@ -88,7 +88,7 @@ class GetData:
 	
 	# Function to write add the learned data to the train file
 	def update_train_data(self, tweet, sentiment):
-		csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/train.csv', 'ab')
+		csvFile = open('/train.csv', 'ab')
 		csvWriter = csv.writer(csvFile)
 		if(sentiment== "positive"):
 			val = "4"

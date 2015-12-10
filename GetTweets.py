@@ -16,20 +16,17 @@
 #   the 500 recent public tweets using the query provided as input and stores it in a csv file. 
 # ----------------------------------------
 #
-# !!! Replace 'E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv' 
-#     with the location of the tweet.csv file in your directoy.
-#
 import tweepy, csv
 from tweepy import OAuthHandler
  
 class GetTweets():
     def getting_query_result(self, query):
         # Consumer key and access token information obtained from registering on Twitter
-        consumer_key = 'mRJGFxAWklN3ffMzNnbbPwmyi'
-        consumer_secret = 'nGSxb13owzSxfSaFofSyTVtziL6PZYmaqpbR0CdUbCJYeU5VYz'
-        access_token_raw = '78868741-ioDSiXl5FvBcd6CDqGgBLLul7elMFLbtLFyDdgOwu'
+        consumer_key = ''
+        consumer_secret = ''
+        access_token_raw = ''
         access_token = access_token_raw.encode('utf-8')
-        access_secret = 'EnsD9n880W0TWD6G8pJ5C8n9FUqafi7AdPFszC2IH8ysF'
+        access_secret = ''
         
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_secret)
@@ -38,7 +35,7 @@ class GetTweets():
         api = tweepy.API(auth)
         
         # tweet.csv file is opened and written
-        csvFile = open('E:/Twitter Sentiment Anlayzer/Gamification---Twitter-Sentiment-Analyzer/tweet.csv', 'wb+')
+        csvFile = open('tweet.csv', 'wb+')
         
         csvWriter = csv.writer(csvFile)
         
