@@ -1,4 +1,4 @@
-# Gamification - Twitter-Sentiment-Analyzer
+# Gamification - Twitter Sentiment Analyzer
 
 The gamification project titled “Twitter Sentiment Analyzer” aims to provide a fun way to collect gold-standard sentiment labels from users by showing them tweets containing specific queries. 
 It also does sentiment analysis for 500 most recent tweets about any query specified by the user.
